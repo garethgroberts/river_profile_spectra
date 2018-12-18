@@ -25,6 +25,12 @@ To run the code and plot output, assuming that you have already installed the de
 
 > ./plot_wave_power_rivers.gmt
 
+If you want to run the code multiple times, say to test different mother wavelets, you can move output around using 
+
+> ./rename_output.sh.
+
+Examples of output for the DOG and Morlet mother wavelets are included in ./wavelet_tests. Note, however, that for compactness I've not uploaded the power spectral maps (i.e. file*.txt, or surf.grd). You will need to run the code first if you want to see that output (or email me). 
+
 Gareth Roberts, 2017-2018, UK. 
 
 
