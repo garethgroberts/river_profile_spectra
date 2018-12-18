@@ -5,7 +5,7 @@ The software contained in this repository is designed to calculate power spectra
 
 The code was designed to convert longitudinal river profiles (i.e. elevation as a function of distance, z(x)) into the distance-wavelength domain. These transformed time series are monotonic functions with evenly sampled elevations (i.e. $\delta_x = C$). Prior to transformation the time series are mirrored about the x and z axes in an attempt to minimise edge effects. Spectral bias was rectified using the approach described by Liu et al. (2007), in essence wavelet power spectra are normalised by scale. The code uses subroutines from the machine learning algorithms from Albanese et al. (2012), which can be found at http://mlpy.sourceforge.net. It also uses numpy and scipy routines to perform a basic Fourier Transform and for other basic tasks. The code has also been used to transform other (e.g. non-monotonic) time series successfully.
 
-This repository includes [1] the source code to perform the wavelet transformation, it is written in python; [2] an example data file, which is the elevation of the Niger river extracted from the CGAIR SRTM digital elevation model down-sampled to 2 km (see Roberts et al., sub judice; http://srtm.csi.cgiar.org/srtmdata); [3] a plotting script to show results, this bash shell script uses routines from the Generic Mapping Tools (gmt; http://gmt.soest.hawaii.edu/projects/gmt) toolkit to do the plotting. 
+This repository includes [1] the source code to perform the wavelet transformation, it is written in python; [2] an example data file, which is the elevation of the Niger river extracted from the CGAIR SRTM digital elevation model down-sampled to 2 km (see Roberts et al., sub judice; http://srtm.csi.cgiar.org/srtmdata); [3] a plotting script to show results, this bash shell script uses routines from the Generic Mapping Tools (gmt; http://gmt.soest.hawaii.edu/projects/gmt) toolkit to do the plotting. The plotting script is the one used to generate Figure 3 in Roberts et al. (sub judice) for completeness/benchmarking. 
 
 A useful starting point for understanding the use of wavelets to calculate power spectra of one-dimensional time series is given by Torrence and Compo (1998). 
 
@@ -18,8 +18,6 @@ Torrence, C., Compo, G. P., 1998. A Practical Guide to Wavelet Analysis, Bull. A
 The code has been tested and benchmarked, but, as ever, use with caution and I suggest that you run your own tests to confirm veracity!  
 If you have any issues with the code and/or comments contact: gareth.roberts@imperial.ac.uk.
 
-Technical details
-Python: 2.7.13
-GMT: 5.1.1
+Versions used to generate code: Python 2.7.13, GMT 5.1.1, mlpy 3.5.0.
 
 
