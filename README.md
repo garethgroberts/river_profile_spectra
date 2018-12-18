@@ -21,4 +21,6 @@ The code has been tested and benchmarked. However, I suggest that you regard it 
 
 Software used to generate code: Python 2.7.13, GMT 5.1.1, mlpy 3.5.0.
 
+Gareth Roberts, 2017-2018, UK. 
+
 
