@@ -17,7 +17,13 @@ Torrence, C., Compo, G. P., 1998. A Practical Guide to Wavelet Analysis, Bull. A
 
 The code has been tested and benchmarked. However, I suggest that you regard it as developmental that you run your own tests to confirm veracity. If you have any issues with running the code and/or comments contact gareth.roberts@imperial.ac.uk.
 
-Software used to generate code: Python 2.7.13, GMT 5.1.1, mlpy 3.5.0.
+Software used to generate code: Python 2.7.13, GMT 5.1.1, mlpy 3.5.0. It was developed and run on OSX 10.12.6 (macOS Sierra), with DeveloperTools installed, but should be portable to most *nix systems. 
+
+To run the code and plot output, assuming that you have already installed the dependencies (e.g. python, numpy, scipy, mlpy, gmt) try:
+
+> python wavelets_rivers.py
+
+> ./plot_wave_power_rivers.gmt
 
 Gareth Roberts, 2017-2018, UK. 
 
