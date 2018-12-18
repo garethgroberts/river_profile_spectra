@@ -1,0 +1,154 @@
+#!/bin/bash
+
+# Bash shell script to plot output from wavelets_rivers.py.
+# You will need gmt installed to make this script work, I used gmt 5.1.1. 
+# This script can be modified to reproduce Figure 3 in 
+#
+# Roberts, G. G., White, N., Lodhia, B., The Generation and Scaling of Longitudinal River Profiles, 
+# Journal of Geophysical Research - Earth Surface, Sub Judice. 
+#
+# note that this version of the script has been pared down for simplicity. 
+# If you wish to recreate the mother wavelet tests shown in the paper 
+# it should be straightforward using the commented out bits of the wavelets_rivers.py code,  
+# the rename_output.sh script attached and by tweaking the code below.
+#
+# Gareth Roberts, 2017-2018, UK, gareth.roberts@imperial.ac.uk.
+
+############################
+# preamble...
+indir=./wavelet_tests/morlet_p6_dj01
+
+riv=./obs_river
+dx=2. # dx in kilometers. 
+
+gmtset FONT_LABEL			 = 10p,Helvetica,black
+gmtset FONT_ANNOT_PRIMARY	 = 8p,Helvetica,black
+gmtset FONT_ANNOT_SECONDARY	 = 10p,Helvetica,black
+gmtset MAP_FRAME_TYPE = plain
+gmtset PS_MEDIA = a2
+
+# make color palette for power grid...
+makecpt -T1e-2/1e3/1 -Cno_green -Qo -Z -D > power.cpt
+
+zlen=`gmtinfo -C $indir/signal.h | awk '{print $2}'`
+xlen=`wc -l $indir/signal.h | awk -v var=$dx '{print ($1 /8) * var}'`
+
+############################
+# plot river profile and inverse wavelet transforms...
+rgn=-R0/$xlen/0/$zlen
+scl='-JX2i/2i'
+
+# plot river profile...
+psbasemap $rgn $scl -Ba1000f500:"Distance, km":/a100f50:"Elevation, m":WeSn -K -Y12i > power_freq.ps
+
+awk -v var=$dx -v var2=$zlen '{print (NR-1)*var, $1 + var2}' < $indir/signal.h | psxy $rgn $scl -Ba0 -O -W0.05i,lightgrey  -K >> power_freq.ps
+awk -v var=$dx -v var2=$zlen '{print (NR-1)*var, $1 + var2}' < $indir/x_icwt_part100km.x | psxy $rgn $scl -Ba0 -W0.01i,red -K -O >> power_freq.ps
+awk -v var=$dx -v var2=$zlen '{print (NR-1)*var, $1 + var2}' < $indir/x_icwt_part1000km.x | psxy $rgn $scl -Ba0 -W0.01i,red,- -K -O >> power_freq.ps
+
+echo "a" | pstext $rgn $scl -B0 -F+f16p,Helvetica,+cTL -D0.05i/-0.05i -O -N -K >> power_freq.ps
+echo "962. 210. Kanji" | pstext $rgn $scl -B0 -F+f10p,Helvetica,+a90 -O -N -K >> power_freq.ps
+echo "900. 160. \341"   | pstext $rgn $scl -B0 -F+f13p,ZapfDingbats,+a270 -O -N -K >> power_freq.ps
+
+echo "668. 180. Jebba" | pstext $rgn $scl -B0 -F+f10p,Helvetica,+a90 -O -N -K >> power_freq.ps
+echo "760. 120. \341"   | pstext $rgn $scl -B0 -F+f13p,ZapfDingbats,+a270 -O -N -K >> power_freq.ps
+
+############################
+# plot wavelet transform...
+rivlen=`tail -1 $riv | awk '{print $4/1000}'`
+minfreq=`tail -1 $riv | awk '{print 1./$4}'`
+ylen=`awk -v var=$rivlen '{if ($3>var) print $1}' < $indir/scales.periods | head -1`
+
+rgn=-R0/$rivlen/4/$rivlen
+scl='-JX2i/2il'
+
+psbasemap $rgn $scl -Ba1000f500:"Distance, km":/a1f3p:"Wavelength, km":WeSn -X3i -K -O >> power_freq.ps
+awk '{ printf "%4.8f %4.20f %4.8f \n", $2/1000, $4/1000, $3}' $indir/file.txt | surface -I10 $rgn -Gsurf.grd
+grdimage surf.grd $rgn $scl -Ba0 -Cpower.cpt -K -O >> power_freq.ps
+
+# plot wavelength (frequency) at which icwt_part is cut...
+awk '{print $2, (1./$6)/1000}' < $indir/file.txt | psxy $rgn $scl -Ba0 -W0.01i -K -O >> power_freq.ps
+awk '{print $2, (1./$7)/1000}' < $indir/file.txt | psxy $rgn $scl -Ba0 -W0.01i,- -K -O >> power_freq.ps
+
+echo "b" | pstext $rgn $scl -B0 -F+f16p,Helvetica,+cTR -D-0.05i/-0.05i -O -N -K -Gwhite >> power_freq.ps
+psscale -D1i/2.2i/1.5i/0.1ih -A -Cpower.cpt -B:"Power, m@+2@+": -Q -O -E -K >> power_freq.ps
+
+############################
+# plot cumulative power per scale (and frequency)...
+rgn=-R3e-7/0.00025/1e-5/1e3
+scl='-JX2il/2il'
+psbasemap $rgn $scl -Ba1f3p:"Wavenumber, m@+-1@+":/a1p:"Power, m@+2@+":WeS -X3i -K -O >> power_freq.ps
+
+# plot fft...
+awk '{printf "%.40f %.40f \n", $1, $3}' <  $indir/fft.pow  | psxy $rgn $scl -Ba0 -W0.01i,darkgrey -O -K >> power_freq.ps
+
+# plot wt...
+awk '{ printf "%4.20f %4.20f\n",  $3, $1}' < $indir/sumpower.fp | psxy $rgn $scl -Ba0 -O -W0.03i -K >> power_freq.ps
+
+# plot labels...
+echo "c" | pstext $rgn $scl -B0 -F+f16p,Helvetica,+cTR -D-0.05i/-0.05i -O -N -K >> power_freq.ps
+
+pstext $rgn $scl -Ba1:"":/a1p:"":n -F+f8p,Helvetica -O -N -K <<END>> power_freq.ps
+1e-6 5e3 1000 km 
+1e-5 5e3 100 km
+1e-4 5e3 10 km
+#8.5e-6 2e6 Wavelength, km
+END
+
+############################
+# plot rectified power (Morlet wavelet output)...
+rgn=-R1e-6/0.00025/1e-9/5e-6
+
+awk '{ printf "%4.20f %4.20f\n",  $3, $5}' < $indir/sumpower.fp | psxy $rgn $scl -Ba1f3p:"Wavenumber, m@+-1@+":/a1p:"Rectified Power, m@+2@+/scale":WeS -O -W0.03i -K -X-6i -Y-3i >> power_freq.ps
+
+# plot labels...
+echo "d" | pstext $rgn $scl -B0 -F+f16p,Helvetica,+cTR -D-0.05i/-0.05i -O -N -K >> power_freq.ps
+
+pstext $rgn $scl -Ba1:"":/a1p:"":n -F+f8p,Helvetica -O -N -K <<END>> power_freq.ps
+1e-6 9e-6 1000 km 
+1e-5 9e-6 100 km
+1e-4 9e-6 10 km
+END
+
+
+############################
+# plot rectified power (DOG wavelet output)...
+rgn=-R1e-6/0.00025/1e-9/5e-6
+
+awk '{ printf "%4.20f %4.20f\n",  $3, $5}' < ./wavelet_tests/dog_p6_dj01/sumpower.fp | psxy $rgn $scl -Ba1f3p:"Wavenumber, m@+-1@+":/a1p:"Rectified Power, m@+2@+/scale":WeS -O -W0.03i -X3i  -K >> power_freq.ps
+
+# plot labels...
+echo "e" | pstext $rgn $scl -B0 -F+f16p,Helvetica,+cTR -D-0.05i/-0.05i -O -N -K >> power_freq.ps
+
+pstext $rgn $scl -Ba1:"":/a1p:"":n -F+f8p,Helvetica -O -N -K <<END>> power_freq.ps
+1e-6 9e-6 1000 km 
+1e-5 9e-6 100 km
+1e-4 9e-6 10 km
+END
+
+
+############################
+# plot cumulative power per scale (and frequency) flattened on red noise (DOG wavelet output)...
+rivlen=`tail -1 $riv | awk '{print $4/1000}'`
+minwavnum=`echo "scale=10; 1./ ($rivlen * 1000.)" | bc`
+rgn=-R1e-6/0.00025/5e-17/2e-14
+
+scl='-JX2il/2il'
+
+psbasemap $rgn $scl -Ba1f3p:"Wavenumber, m@+-1@+":/a1p:"Normalized Power, @~\146@~(2@~\160@~k)@+2@+":WeS -X3i -K -O >> power_freq.ps
+
+awk '{ printf "%4.20f %4.20f\n",  $3, $5 * (2 * 3.1415 * $3)**2. }' < ./wavelet_tests/dog_p6_dj01/sumpower.fp | psxy $rgn $scl -Ba0 -O -K -W0.03i >> power_freq.ps
+
+# plot labels...
+pstext $rgn $scl -Ba1:"":/a1p:"":n -F+f8p,Helvetica -O -N -K <<END>> power_freq.ps
+1e-6 4e-14 1000 km
+1e-5 4e-14 100 km
+1e-4 4e-14 10 km
+END
+echo "f" | pstext $rgn $scl -B0 -F+f16p,Helvetica -Gwhite -O -N -F+cTL -D0.05i/-0.05i >> power_freq.ps
+
+# convert postscript to jpg...
+ps2eps -f power_freq.ps
+ps2raster power_freq.eps
+open power_freq.jpg
+
+rm -f power_freq.eps power_freq.ps
