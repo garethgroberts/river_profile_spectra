@@ -6,7 +6,7 @@ The software contained in this repository is designed to calculate power spectra
 Roberts, G. G., White, N., Lodhia, B., 2019. The Generation and Scaling of Longitudinal River Profiles, Journal of Geophysical Research - Earth Surface, doi:10.1029/2018JF004796. 
 https://agupubs.onlinelibrary.wiley.com/doi/full/10.1029/2018JF004796
 
-And also in:
+And relatedly, a method to calculate similarities and disparities between time series (e.g. river profiles) across the scales of interest using a cross wavelet approach is given in:
 
 Roberts, G. G., 2019. Scales of Similarity and Disparity Between Drainage Networks, Geophysical Research Letters, doi: 10.1029/2019GL082446. 
 https://agupubs.onlinelibrary.wiley.com/doi/10.1029/2019GL082446
