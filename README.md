@@ -3,11 +3,17 @@ Wavelet power spectra of one-dimensional time series.
 
 The software contained in this repository is designed to calculate power spectra of one-dimensional time series using wavelets. It calculates power (i.e. amplitude-squared) as a function of distance and wavelength (or time and frequency), and also distance-averaged power spectra, which is somewhat analogous to a Fourier transformation of the time series. A description of the methods used and examples are given in: 
 
-Roberts, G. G., White, N., Lodhia, B., The Generation and Scaling of Longitudinal River Profiles, Journal of Geophysical Research - Earth Surface, Sub Judice. 
+Roberts, G. G., White, N., Lodhia, B., 2019. The Generation and Scaling of Longitudinal River Profiles, Journal of Geophysical Research - Earth Surface, doi:10.1029/2018JF004796. 
+https://agupubs.onlinelibrary.wiley.com/doi/full/10.1029/2018JF004796
+
+And also in:
+
+Roberts, G. G., 2019. Scales of Similarity and Disparity Between Drainage Networks, Geophysical Research Letters, doi: 10.1029/2019GL082446. 
+https://agupubs.onlinelibrary.wiley.com/doi/10.1029/2019GL082446
 
 The code was designed to convert longitudinal river profiles (i.e. elevation as a function of distance, z(x)) into the distance-wavelength domain. The time series being transformed are monotonic functions with evenly sampled elevations (i.e. $\delta_x = C$). Prior to transformation the time series are mirrored about the x and z axes in an attempt to minimise edge effects. Spectral bias was rectified using the approach described by Liu et al. (2007), in essence wavelet power spectra are normalised by scale. The code uses subroutines from the machine learning algorithms from Albanese et al. (2012), which can be found at http://mlpy.sourceforge.net, which are based on the methods described by Torrence and Compo (1998). It also uses numpy and scipy routines to perform a basic Fourier transform and for other basic computational tasks. The code has been used to transform other (e.g. non-monotonic) time series successfully.
 
-This repository includes [1] the source code to perform the wavelet transformation, it is written in python; [2] an example data file, which is the elevation of the Niger river extracted from the CGAIR SRTM digital elevation model down-sampled to 2 km (one.z, see Roberts et al., sub judice; http://srtm.csi.cgiar.org/srtmdata); [3] a plotting script to show results, this bash shell script uses routines from the Generic Mapping Tools (gmt; http://gmt.soest.hawaii.edu/projects/gmt) toolkit to do the plotting. For completeness/benchmarking the plotting script is a pared down version of the one used to generate Figure 3 in Roberts et al. (sub judice). Note that the full resolution (~90 m) river profile is also included for completeness (obs_river), and for use in the plotting script. 
+This repository includes [1] the source code to perform the wavelet transformation, it is written in python; [2] an example data file, which is the elevation of the Niger river extracted from the CGAIR SRTM digital elevation model down-sampled to 2 km (one.z, see Roberts et al., sub judice; http://srtm.csi.cgiar.org/srtmdata); [3] a plotting script to show results, this bash shell script uses routines from the Generic Mapping Tools (gmt; http://gmt.soest.hawaii.edu/projects/gmt) toolkit to do the plotting. For completeness/benchmarking the plotting script is a pared down version of the one used to generate Figure 3 in Roberts et al. (2019). Note that the full resolution (~90 m) river profile is also included for completeness (obs_river), and for use in the plotting script. 
 
 The code has been tested and benchmarked. However, I suggest that you regard it as developmental that you run your own tests to confirm veracity. If you have any issues with running the code and/or comments contact gareth.roberts@imperial.ac.uk.
 
