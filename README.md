@@ -39,6 +39,6 @@ Liu, Y., Liang, X. S., Weinberg, R. H., 2007. Rectification of the Bias in the W
 
 Torrence, C., Compo, G. P., 1998. A Practical Guide to Wavelet Analysis, Bull. Am. Met. Soc., 79(1), 61-78.
 
-Gareth Roberts, 2017-2018, UK. 
+Gareth Roberts, 2017-2019, UK. 
 
 
